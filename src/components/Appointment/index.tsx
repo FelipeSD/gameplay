@@ -37,34 +37,34 @@ export function Appointment({
         <RectButton {...rest}> 
             <View style={styles.container}>
                 <GuildIcon />
-            </View>
 
-            <View style={styles.content}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>
-                        {data.guild.name}
-                    </Text>
-                    <Text style={styles.category}>
-                        {category.title}
-                    </Text>
-                </View>
-                <View style={styles.footer}>
-                    <View style={styles.dateInfo}>
-                        <CalendarSvg />
-                        <Text> style={styles.date}
-                            {data.date}
+                <View style={styles.content}>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>
+                            {data.guild.name}
+                        </Text>
+                        <Text style={styles.category}>
+                            {category.title}
                         </Text>
                     </View>
+                    <View style={styles.footer}>
+                        <View style={styles.dateInfo}>
+                            <CalendarSvg />
+                            <Text style={styles.date}>
+                                {data.date}
+                            </Text>
+                        </View>
 
-                    <View style={styles.playersInfo}>
-                        <PlayerSvg fill={owner ? primary : on} />
+                        <View style={styles.playersInfo}>
+                            <PlayerSvg fill={owner ? primary : on} />
 
-                        <Text style={[
-                            styles.player,
-                            {color: owner ? primary : on}
-                        ]}>
-                            {owner ? 'Anfitrião' : 'Visitante'}
-                        </Text>
+                            <Text style={[
+                                styles.player,
+                                {color: owner ? primary : on}
+                            ]}>
+                                {owner ? 'Anfitrião' : 'Visitante'}
+                            </Text>
+                        </View>
                     </View>
                 </View>
             </View>
