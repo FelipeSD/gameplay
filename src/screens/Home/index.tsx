@@ -4,14 +4,18 @@ import { styles } from "./styles";
 import {Profile} from '../../components/Profile';
 import {ButtonAdd} from '../../components/ButtonAdd';
 import {CategorySelect} from '../../components/CategorySelect';
+import {Background} from '../../components/Background';
 import {Appointment} from '../../components/Appointment';
 import {ListDivider} from '../../components/ListDivider';
 import {ListHeader} from '../../components/ListHeader';
 import { useState } from "react";
 import { FlatList } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export function Home(){
     const [category, setCategory] = useState("");
+    const navigarion = useNavigation();
+
     const appointments = [
         {
             id: '1',
@@ -31,11 +35,19 @@ export function Home(){
         categoryId === category ? setCategory('') : setCategory(categoryId);
     }
 
+    function handleAppointmentDetails(){
+        navigarion.navigate('Details');
+    }
+
+    function handleAppointmentCreate(){
+        navigarion.navigate('AppointmentCreate');
+    }
+
     return (
-        <View>
+        <Background>
             <View style={styles.header}> 
                 <Profile />
-                <ButtonAdd />
+                <ButtonAdd onPress={handleAppointmentCreate} />
             </View>
 
             <CategorySelect 
@@ -51,13 +63,14 @@ export function Home(){
                     keyExtractor={item => item.id}
                     ItemSeparatorComponent={() => <ListDivider/>}
                     renderItem={({item}) => (
-                        <Appointment 
+                        <Appointment
+                            onPress={handleAppointmentDetails}
                             data={item}
                         />
                     )}
                     style={styles.matches}
                 />
             </View>
-        </View>
+        </Background>
     )
 }
