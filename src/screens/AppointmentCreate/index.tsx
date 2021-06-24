@@ -21,8 +21,16 @@ export const AppointmentCreate = () => {
   const [openGuildsModal, setOpenGuildsModal] = useState(false);
   const [guild, setGuild] = useState<GuildProps>({} as GuildProps);
 
+  function handleCategorySelect(categoryId: string){
+    categoryId === category ? setCategory('') : setCategory(categoryId);
+  }
+
   function handleOpenGuilds(){
     setOpenGuildsModal(true);
+  }
+
+  function handleCloseGuilds(){
+    setOpenGuildsModal(false);
   }
 
   function handleGuildSelect(guildSelected: GuildProps){
@@ -35,8 +43,8 @@ export const AppointmentCreate = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView>
-        <Background>
+      <Background>
+        <ScrollView>
           <Header 
             title="Agendar partida"
           />
@@ -50,7 +58,7 @@ export const AppointmentCreate = () => {
 
           <CategorySelect 
             categorySelected={category}
-            handleCategorySelect={setCategory}
+            handleCategorySelect={handleCategorySelect}
             hasCheckBox 
           />
 
@@ -75,7 +83,10 @@ export const AppointmentCreate = () => {
             
             <View style={styles.field}>
               <View>
-                <Text style={styles.label}>
+                <Text style={[
+                  styles.label, 
+                  {marginBottom: 12}
+                ]}>
                   Dia e mês
                 </Text>
 
@@ -89,7 +100,10 @@ export const AppointmentCreate = () => {
               </View>
 
               <View>
-                <Text style={styles.label}>
+                <Text style={[
+                  styles.label, 
+                  {marginBottom: 12}
+                ]}>
                   Hora e minuto
                 </Text>
 
@@ -121,14 +135,15 @@ export const AppointmentCreate = () => {
             numberOfLines={5} 
             autoCorrect={false} />
 
-          </Background>
 
           <View style={styles.footer}>
             <Button title="Agendar" />
           </View>
-      </ScrollView>
+        </ScrollView>
+      </Background>
 
-      <ModalView visible={openGuildsModal}>
+
+      <ModalView closeModal={handleCloseGuilds} visible={openGuildsModal}>
         <Guilds handleGuildSelect={handleGuildSelect} />
       </ModalView>
 
