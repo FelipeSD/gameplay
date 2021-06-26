@@ -40,12 +40,12 @@ export const Header = ({title, action}: Props) => {
             >
                 {title}
             </Text>
-
-            {
+            <View style={{width: 24}} />
+            {/* {
                 action 
                 ? <View> {action} </View>
                 : <View style={{width: 24}} />
-            }
+            } */}
         </LinearGradient>
     );
 }

@@ -16,7 +16,7 @@ import { theme } from '../../global/styles/theme';
 
 
 export function SignIn() {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const {loading, signIn} = useAuth();
 
   async function handleSignIn(){

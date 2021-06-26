@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, ImageBackground, Text, FlatList, ScrollView, KeyboardAvoidingView, Platform, Modal } from 'react-native';
+import { View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import {RectButton} from 'react-native-gesture-handler'
 import { Feather } from '@expo/vector-icons';
+import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Background} from '../../components/Background';
 import {ModalView} from '../../components/ModalView';
@@ -15,11 +17,22 @@ import {Guilds} from '../Guilds';
 import { styles } from './styles';
 import { theme } from '../../global/styles/theme';
 import { GuildProps } from '../../components/Guild';
+import { COLLECTION_APPOINTMENTS } from '../../config/database';
+import { useNavigation } from '@react-navigation/core';
+import { Alert } from 'react-native';
 
 export const AppointmentCreate = () => {
   const [category, setCategory] = useState("");
   const [openGuildsModal, setOpenGuildsModal] = useState(false);
   const [guild, setGuild] = useState<GuildProps>({} as GuildProps);
+
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState('');
+  const [hour, setHour] = useState('');
+  const [minute, setMinute] = useState('');
+  const [description, setDescription] = useState('');
+
+  const navigation = useNavigation();
 
   function handleCategorySelect(categoryId: string){
     categoryId === category ? setCategory('') : setCategory(categoryId);
@@ -36,6 +49,33 @@ export const AppointmentCreate = () => {
   function handleGuildSelect(guildSelected: GuildProps){
     setGuild(guildSelected)
     setOpenGuildsModal(false);
+  }
+
+  async function handleSave(){
+    if(!guild) {Alert.alert("Selecione um servidor"); return;};
+    if(!category) {Alert.alert("Selecione uma categoria"); return;};
+    if(!day) {Alert.alert("Digite o dia"); return;};
+    if(!month) {Alert.alert("Digite o mês"); return;};
+    if(!hour) {Alert.alert("Digite o horário do agendamento"); return;};
+    if(!minute) {Alert.alert("Digite os minutos"); return;};
+
+    const newAppointment = {
+      id: uuid.v4(),
+      guild,
+      category,
+      date: `${day}/${month} às ${hour}:${minute}h`,
+      description
+    }
+
+    const storage = await AsyncStorage.getItem(COLLECTION_APPOINTMENTS);
+    const appointments = storage ? JSON.parse(storage) : [];
+
+    await AsyncStorage.setItem(
+      COLLECTION_APPOINTMENTS,
+      JSON.stringify([...appointments, newAppointment])
+    );
+
+    navigation.navigate('Home');
   }
 
   return (
@@ -67,7 +107,7 @@ export const AppointmentCreate = () => {
               <View style={styles.select}>
                 {
                   guild.icon 
-                  ? <GuildIcon />
+                  ? <GuildIcon guildId={guild.id} iconId={guild.icon} />
                   : <View style={styles.image} />
                 }
 
@@ -91,11 +131,11 @@ export const AppointmentCreate = () => {
                 </Text>
 
                 <View style={styles.column}>
-                  <SmallInput maxLength={2} />
+                  <SmallInput maxLength={2} onChangeText={setDay} />
                   <Text style={styles.divider}>
                     /
                   </Text>
-                  <SmallInput maxLength={2} />
+                  <SmallInput maxLength={2} onChangeText={setMonth} />
                 </View>
               </View>
 
@@ -108,11 +148,11 @@ export const AppointmentCreate = () => {
                 </Text>
 
                 <View style={styles.column}>
-                  <SmallInput maxLength={2} />
+                  <SmallInput maxLength={2} onChangeText={setHour} />
                   <Text style={styles.divider}>
                     :
                   </Text>
-                  <SmallInput maxLength={2} />
+                  <SmallInput maxLength={2} onChangeText={setMinute} />
                 </View>
               </View>
             </View>
@@ -133,11 +173,12 @@ export const AppointmentCreate = () => {
             multiline 
             maxLength={100} 
             numberOfLines={5} 
-            autoCorrect={false} />
+            autoCorrect={false}
+            onChangeText={setDescription} />
 
 
           <View style={styles.footer}>
-            <Button title="Agendar" />
+            <Button title="Agendar" onPress={handleSave} />
           </View>
         </ScrollView>
       </Background>
